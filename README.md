@@ -76,7 +76,7 @@ The stepper motor has to be wired into the ULN2003 Driver Board and this board t
 > The GPIO pins you choose should be consistent throughout the coding and should default as a tuple following the order of:
 
 GPIO PIN | INPUT PIN (ON THE BOARD)
-----------: | :----------:
+:----------: | :----------:
 GPIO PIN 1 | IN1
 GPIO PIN 2 | IN2
 GPIO PIN 3 | IN3
@@ -97,7 +97,7 @@ GPIO PIN 4 | IN4
 The servo motor in this case is the Adafruit Waveshare Servo Driver w/ 16 channels and basically it's colour coded to match the colours of the wires of the servo motor with:
 
 Colour | Meaning | Colour Variations
-:---: | --- | :---:
+:---: | :---: | :---:
 Red | Power / Voltage | Orange
 Yellow | Signal to control the direction | 
 Brown | Ground | Black
@@ -114,11 +114,26 @@ External power supply must also be connected using the terminal blocks and this 
 ![L8075 Transistor Breadboard Wiring](https://user-images.githubusercontent.com/70390694/109856511-78741200-7c51-11eb-8555-d406c3005648.jpg)
 
 PINS | MEANING
------|-------:
+:-----: | :-------:
 1 (Connected to the yellow wire) | INPUT FROM 6V TO 15V
 2 (Connected to the black wire) | GROUND 
 3 (Connected to the red wire) | OUTPUT OF 5V
 
 > These pin values are assuming from the front of the voltage transistor and to find the front, simply find the side with the text on stating what voltage transistor and other information.
 
-The actual servo motor will have 3 coloured wires (yellow, brown, red / orange)
+### Camera Module 
+
+The camera module comes with two ribbon cables (thin cables with traces on them that are durable as well). The ribbon cables that are supplied with will contain two sides, one of which is clearly dictated by a blue separating at the bottom. To insert the camera module, grab the sides of the camera module on the raspberry pi (a white rectangle with black sides) and carefully lift it up, once it has been lift up, pull it towards the ethernet ports and hdmi ports. Once this has been done, insert the blue side of the ribbon cable facing the ethernet ports and insert the ribbon cable. Once inserted, close the black sides by pulling them together. Do the same for the camera module.
+
+-----------------
+
+## Software
+### Dependencies
+
+Package Name | Version used | Pre-installed on Raspberry Pi 4B+ | 
+:------------: | :------------: | :---------------------------------: | 
+[OpenCV](https://pypi.org/project/opencv-python/) | 4.5.1.48 | NO
+[RPi.GPIO](https://pypi.org/project/RPi.GPIO/) | 0.7.0 | YES
+[adafruit_servokit](https://pypi.org/project/adafruit-circuitpython-servokit/) | 1.3.3 | NO
+
+> The Python version I used was 3.7.
