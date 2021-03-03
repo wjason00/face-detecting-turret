@@ -89,7 +89,7 @@ GPIO PIN 4 | IN4
 
 - A side view which shows the 5-12V ground and vin connections which are clearly shown by the **-** and **+** next to the female header.
 ![ULN2003 Driver Board 2](https://user-images.githubusercontent.com/70390694/109843704-4491f000-7c43-11eb-9802-a2918cf3cf19.jpg)
-![Uploading image.png…]()
+
 
 
 ### Servo Motor
