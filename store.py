@@ -1,6 +1,7 @@
 import cv2
 import RPi.GPIO as GPIO
 from time import sleep
+from math import floor
 from adafruit_servokit import ServoKit
 
 # Creating a class
@@ -65,10 +66,11 @@ class camera():
     # Finding faces 
     def start_video(self, turret):
         capture = cv2.VideoCapture(self.wanted_camera)
-        mid_x = round(frame.shape[1] / 2)
-        end_y = frame.shape[0]
 
         while True:
+            mid_x = floor(frame.shape[1] / 2)
+            end_y = frame.shape[0]
+
             # Displaying the middle of the frame
             return_value, frame = capture.read()
             cv2.line(frame, (mid_x, 0), (mid_x, end_y), (0, 255, 0), thickness = 10)
@@ -79,11 +81,20 @@ class camera():
 
             # For the respective coords returned by the detectMultiScale
             for (x,y,w,h) in face:
-                mid_x_face_coords = round((x+y))
+                mid_x_face_coords = floor((x+w) / 2) 
 
+                # Checking the coordinates against the middle to see where we are currently
+                if mid_x_face_coords < mid_x:
+                    turret.move_left(10)
+                
+                elif mid_x_face_coords > mid_x:
+                    turret.move_right(10)
 
+                else:
+                    turret.face_detected()
 
+            k = cv2.waitKey(30) & 0xFF 
+            if k == "27":
+                break
 
-
-
-
+        turret.cleanup()
