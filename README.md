@@ -76,7 +76,7 @@ The stepper motor has to be wired into the ULN2003 Driver Board and this board t
 > The GPIO pins you choose should be consistent throughout the coding and should default as a tuple following the order of:
 
 GPIO PIN | INPUT PIN (ON THE BOARD)
----------- | ----------
+----------: | :----------:
 GPIO PIN 1 | IN1
 GPIO PIN 2 | IN2
 GPIO PIN 3 | IN3
@@ -94,12 +94,31 @@ GPIO PIN 4 | IN4
 
 ### Servo Motor
 
-The servo motor in this case is the Adafruit Waveshare Servo Driver w/ 16 channels and basically it's colour coded to match the colours of the wires of the servo motor with ground, signal and power representing brown, yellow and red respectively. External power supply must also be connected using the terminal blocks and this should only be 5V. If you use a 12V power supply, use a L8075 Voltage Transistor to step down the voltage by putting in 12 V at pin 1, connecting ground to pin 2 and then the output will be pin 3. Don't forget to connect resistors to reduce ripple and potentially destroy any of the circuit.
+The servo motor in this case is the Adafruit Waveshare Servo Driver w/ 16 channels and basically it's colour coded to match the colours of the wires of the servo motor with:
 
-- Servo Motor Connection (5.5MM X 2.2MM Pigtail Connection via Terminal Block)
+Colour | Meaning | Colour Variations
+:---: | --- | :---:
+Red | Power / Voltage | Orange
+Yellow | Signal to control the direction | 
+Brown | Ground | Black
+
+External power supply must also be connected using the terminal blocks and this should only be 5V. If you use a 12V power supply, use a L8075 Voltage Transistor to step down the voltage by putting in 12 V at pin 1, connecting ground to pin 2 and then the output will be pin 3. Don't forget to connect resistors to reduce ripple and potentially destroy any of the circuit.
+
+- 5.5mm x 2.2mm Pigtail Jack Connector into Terminal Block section and Male Jack
 ![5 5MM X 2 2MM Pigtail Connection 5V Terminal BLock](https://user-images.githubusercontent.com/70390694/109845715-596f8300-7c45-11eb-88dc-06f4150170f7.jpg)
+![Male and Female Pigtail Connections](https://user-images.githubusercontent.com/70390694/109853969-66dd3b00-7c4e-11eb-9299-8effb171f137.jpg)
+
   - Used to supply the servo driver 5V and **ONLY** 5V. Supplying extra will most likely fry your I2C GPIO3 pin as I've experienced before and that's permanent. 
 
+- L7085 Voltage Transistor 
+![L8075 Transistor Breadboard Wiring](https://user-images.githubusercontent.com/70390694/109856511-78741200-7c51-11eb-8555-d406c3005648.jpg)
 
+PINS | MEANING
+-----|-------:
+1 (Connected to the yellow wire) | INPUT FROM 6V TO 15V
+2 (Connected to the black wire) | GROUND 
+3 (Connected to the red wire) | OUTPUT OF 5V
 
+> These pin values are assuming from the front of the voltage transistor and to find the front, simply find the side with the text on stating what voltage transistor and other information.
 
+The actual servo motor will have 3 coloured wires (yellow, brown, red / orange)
