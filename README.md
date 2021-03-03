@@ -13,58 +13,60 @@ The overall turret part of the project is going to be a piece of string attached
 ## Electronic Specifics
 
 **- Stepper Motor 
-: 28YBJ-48**
+: [28YBJ-48](https://www.amazon.co.uk/Elegoo-28BYJ-48-Stepper-ULN2003-Arduino/dp/B01LXT5740/ref=sr_1_8?crid=9NKB03MF57TH&dchild=1&keywords=28byj-48&qid=1614794453&sprefix=28BYJ+%2Caps%2C158&sr=8-8)**
 
 **- Servo Motor
-: SG90**
+: [SG90](https://www.amazon.co.uk/Dawa-Helicopter-Airplane-Remote-Control/dp/B07MHFVBNN/ref=sr_1_14?dchild=1&keywords=Servo+Motor&qid=1614794502&sr=8-14)**
 
 **- Raspberry Pi 
-: Model 4B / Pico (Might want to try out the Pico)**
+: [Model 4B](https://thepihut.com/products/raspberry-pi-4-model-b) / [Pico](https://thepihut.com/products/raspberry-pi-pico) (Might want to try out the [Pico](https://thepihut.com/products/raspberry-pi-pico))**
 
 **- Camera Module
-: CAM-MIPI9281RAW (Made by Innomaker)**
+: [CAM-MIPI9281RAW](https://www.amazon.co.uk/Inno-Maker-Camera-Module-OV5647-Raspberry/dp/B07G9VLPZH/ref=sr_1_5?dchild=1&keywords=Raspberry+Pi+Camera+innomaker&qid=1614794603&sr=8-5) (Made by Innomaker)**
 
 **- Power Supply (For supplying power to the stepper motor and servos)
 : Any 5-12V capable power supply will do.**
 
 **- Servo Driver 
-: Adafruit Waveshare Servo Driver 16 Channels (Any number of channels will do so long as it's above 4)**
+: [Adafruit Waveshare Servo Driver 16 Channels](https://www.amazon.co.uk/Waveshare-16-Channel-Servo-Driver-HAT/dp/B07GYFTKZD/ref=sr_1_3?dchild=1&keywords=Servo+Driver+HAT&qid=1614794863&sr=8-3) (Any number of channels will do so long as it's above 4)**
 
 **- Stepper Driver
-: ULN2003 driver board**
+: [ULN2003 driver board](https://www.amazon.co.uk/Elegoo-28BYJ-48-Stepper-ULN2003-Arduino/dp/B01LXT5740/ref=sr_1_8?crid=9NKB03MF57TH&dchild=1&keywords=28byj-48&qid=1614794453&sprefix=28BYJ+%2Caps%2C158&sr=8-8)**
 
 **- Voltage Transistor (Turning 12V to 5V)
-: L8075 Voltage Transistor**
+: [L8075 Voltage Transistor](https://www.amazon.co.uk/ARCELI-LM317T-L7824-Transistor-Assortment-Transistors/dp/B07NPQGXY2/ref=sr_1_5?dchild=1&keywords=voltage+transistor&qid=1614794701&sr=8-5)**
 
 **- Capacitors (For minimising ripple across the voltage transistor)
-: 10mF and 1mF capacitors capable of at least 12V**
+: [10mF and 1mF capacitors capable of at least 12V](https://www.amazon.co.uk/ARCELI-15Value-Electrolytic-Capacitor-Assortment/dp/B07RN3Q8SD/ref=sr_1_5?dchild=1&keywords=capacitor+kit&qid=1614794760&sr=8-5)**
 
 **- Pigtail Power Connectors (For supplying 5V to the Servo Driver board)
-: 2.1mm x 5.5mm Male and Female DC Pigtal Power Connectors 12V capable.**
+: [2.1mm x 5.5mm Male and Female DC Pigtal Power Connectors 12V capable.](https://www.amazon.co.uk/Pigtail-Security-Camera-Female-Connectors-Black/dp/B07Q9Z5PLL/ref=sr_1_5?dchild=1&keywords=Pigtail+connectors+5.5mm&qid=1614794788&sr=8-5)**
 
 ## 3D Models
-### 28BYJ-48 STEPPER MOTOR MODEL HOLDER
+### 28BYJ-48 Stepper Motor Holder
+------------------------------
 
----------------------
-
-
-![image](https://user-images.githubusercontent.com/70390694/109780429-eba06880-7bfe-11eb-9a68-1067510ce99e.png)
+![image](https://user-images.githubusercontent.com/70390694/109851604-c84fda80-7c4b-11eb-867a-df5dc6820a34.png)
 ![image](https://user-images.githubusercontent.com/70390694/109780941-5fdb0c00-7bff-11eb-9955-9ed85b9b72c4.png)
 ![image](https://user-images.githubusercontent.com/70390694/109781071-80a36180-7bff-11eb-82d0-6d21a4a10be1.png)
 ![image](https://user-images.githubusercontent.com/70390694/109781225-a29ce400-7bff-11eb-9c66-27cd568abac7.png)
 
-![image](https://user-images.githubusercontent.com/70390694/109780563-0a9efa80-7bff-11eb-927e-6f1b737599c5.png)
-![image](https://user-images.githubusercontent.com/70390694/109781276-ae88a600-7bff-11eb-8bb8-93e0ceb98c2a.png)
-![image](https://user-images.githubusercontent.com/70390694/109781305-b47e8700-7bff-11eb-9aeb-3a362bdb5d82.png)
+### Camera Module Holder
+------------------------------
+
+![image](https://user-images.githubusercontent.com/70390694/109851878-149b1a80-7c4c-11eb-8593-e0abaf3c389a.png)
+![image](https://user-images.githubusercontent.com/70390694/109852046-43b18c00-7c4c-11eb-9be7-605237e79e2b.png)
+![image](https://user-images.githubusercontent.com/70390694/109852113-55932f00-7c4c-11eb-9c9c-f39fa2dfd55b.png)
+
+### Servo Motor Connector
+------------------------------
+![image](https://user-images.githubusercontent.com/70390694/109853174-8889f280-7c4d-11eb-83a5-724b8d6812e6.png)
+![image](https://user-images.githubusercontent.com/70390694/109853225-963f7800-7c4d-11eb-876d-8c1aa7427939.png)
+![image](https://user-images.githubusercontent.com/70390694/109853266-9f304980-7c4d-11eb-8dcb-ea527f265042.png)
+![image](https://user-images.githubusercontent.com/70390694/109853297-ab1c0b80-7c4d-11eb-8a71-fcad2e895439.png)
+![image](https://user-images.githubusercontent.com/70390694/109853344-b707cd80-7c4d-11eb-945f-372aa736c6fc.png)
 
 
-
-![image](https://user-images.githubusercontent.com/70390694/109780768-37eba880-7bff-11eb-84eb-cd5c5b1aa9c9.png)
-![image](https://user-images.githubusercontent.com/70390694/109780809-41751080-7bff-11eb-90db-48b3d71d9183.png)
-![image](https://user-images.githubusercontent.com/70390694/109780858-4c2fa580-7bff-11eb-92de-a6c1cba00a08.png)
-![image](https://user-images.githubusercontent.com/70390694/109780881-518cf000-7bff-11eb-9b90-d8ad49699026.png)
-
-- A model for holding the servo motors and attaching itself to the stepper motor using a cylinder with radius of 6.75mm and shelled.
 
 ## Wiring
 ### Stepper Motor
@@ -87,6 +89,7 @@ GPIO PIN 4 | IN4
 
 - A side view which shows the 5-12V ground and vin connections which are clearly shown by the **-** and **+** next to the female header.
 ![ULN2003 Driver Board 2](https://user-images.githubusercontent.com/70390694/109843704-4491f000-7c43-11eb-9802-a2918cf3cf19.jpg)
+![Uploading image.png…]()
 
 
 ### Servo Motor
