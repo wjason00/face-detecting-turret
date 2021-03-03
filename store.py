@@ -81,7 +81,11 @@ class camera():
 
             # For the respective coords returned by the detectMultiScale
             for (x,y,w,h) in face:
+                # Finding the middle of the face detected and rounding down.
                 mid_x_face_coords = floor((x+w) / 2) 
+
+                # Drawing a line where the middle of the face is visually.
+                cv2.line(frame, (mid_x_face_coords, 0), (mid_x_face_coords, frame.shape[0]), (0,0,255), thickness=10)
 
                 # Checking the coordinates against the middle to see where we are currently
                 if mid_x_face_coords < mid_x:
@@ -92,7 +96,11 @@ class camera():
 
                 else:
                     turret.face_detected()
-
+            
+            # Displaying the actual video feed.
+            cv2.imshow("Camera", frame)
+        
+            # Checking if the user wants to close the window
             k = cv2.waitKey(30) & 0xFF 
             if k == "27":
                 break
