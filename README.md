@@ -135,5 +135,7 @@ Package Name | Version used | Pre-installed on Raspberry Pi 4B+ |
 [OpenCV](https://pypi.org/project/opencv-python/) | 4.5.1.48 | NO
 [RPi.GPIO](https://pypi.org/project/RPi.GPIO/) | 0.7.0 | YES
 [adafruit_servokit](https://pypi.org/project/adafruit-circuitpython-servokit/) | 1.3.3 | NO
+Math | | YES
+Time | | YES
 
 > The Python version I used was 3.7.
