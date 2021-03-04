@@ -60,7 +60,7 @@ class turret():
 class camera():
     def __init__(self, wanted_camera):
         self.wanted_camera = wanted_camera
-        self.face_classifier = cv2.CascadeClassifier("haarcascade_face.xml")
+        self.face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_face.xml")
     
 
     # Finding faces 
@@ -68,16 +68,19 @@ class camera():
         capture = cv2.VideoCapture(self.wanted_camera)
 
         while True:
+            # Returning two values; if a value has been returned and the frame
+            return_value, frame = capture.read()
+            
+            # Declaring some variables to clean up later.
             mid_x = floor(frame.shape[1] / 2)
             end_y = frame.shape[0]
 
             # Displaying the middle of the frame
-            return_value, frame = capture.read()
             cv2.line(frame, (mid_x, 0), (mid_x, end_y), (0, 255, 0), thickness = 10)
 
             # Detecting the face on a gray image to decrease processing time
-            grayscaled = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            face = self.face_classifier.detectMultiScale(grayscaled, 1.3, 5)
+
+            face = self.face_classifier.detectMultiScale(frame, 1.3, 5)
 
             # For the respective coords returned by the detectMultiScale
             for (x,y,w,h) in face:
@@ -99,7 +102,6 @@ class camera():
             
             # Displaying the actual video feed.
             cv2.imshow("Camera", frame)
-
         
             # Checking if the user wants to close the window
             k = cv2.waitKey(30) & 0xFF 
@@ -107,10 +109,3 @@ class camera():
                 break
 
         turret.cleanup()
-
-
-
-
-
-
-
