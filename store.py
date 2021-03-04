@@ -4,9 +4,19 @@ from time import sleep
 from math import floor
 from adafruit_servokit import ServoKit
 
-# Creating a class
+# Creating a list to call from to move anticlockwise
+
+sequence = [
+    [1,0,0,1],
+    [1,1,0,0],
+    [0,1,1,0],
+    [0,0,1,1]
+]
+
+# Creating a class for controlling the turret
 class turret():
     def __init__(self, gpio_pins):
+
         # Setting up GPIO pins for the stepper motor
         self.gpio_pins = gpio_pins
         GPIO.setwarnings(False) 
@@ -36,20 +46,22 @@ class turret():
     # Moving left by moving anticlockwise
     def move_left(self, steps):
         for i in range(steps):
-            GPIO.output(self.gpio_pins, (GPIO.HIGH, GPIO.LOW, GPIO.LOW, GPIO.HIGH))
-            GPIO.output(self.gpio_pins, (GPIO.LOW, GPIO.LOW, GPIO.HIGH, GPIO.HIGH))
-            GPIO.output(self.gpio_pins, (GPIO.LOW, GPIO.HIGH, GPIO.HIGH, GPIO.LOW))
-            GPIO.output(self.gpio_pins, (GPIO.HIGH, GPIO.HIGH, GPIO.LOW, GPIO.LOW))
-
+            for step in reversed(range(len(sequence))):
+                GPIO.output(self.gpio_pins[0], sequence[step][0])
+                sleep(0.01)
+                GPIO.output(self.gpio_pins[1], sequence[step][1])
+                sleep(0.01)
+                GPIO.output(self.gpio_pins[2], sequence[step][2])
+                sleep(0.01)
+                GPIO.output(self.gpio_pins[3], sequence[step][3])
+                sleep(0.01)
 
     def face_detected(self):
-        # Change this later so that it moves once and rotates 90 degrees
-        for i in range(180):
-            self.kit.servo[0].angle = 90
-            self.kit.servo[1].angle = 90
-            self.kit.servo[0].angle = 0
-            self.kit.servo[1].angle = 0
-            sleep(0.05)
+        self.kit.servo[0].angle = 90
+        self.kit.servo[1].angle = 90
+        sleep(1)
+        self.kit.servo[0].angle = 0
+        self.kit.servo[1].angle = 0 
 
     
     def cleanup(self):
@@ -60,7 +72,7 @@ class turret():
 class camera():
     def __init__(self, wanted_camera):
         self.wanted_camera = wanted_camera
-        self.face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_face.xml")
+        self.face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     
 
     # Finding faces 
@@ -68,6 +80,7 @@ class camera():
         capture = cv2.VideoCapture(self.wanted_camera)
 
         while True:
+
             # Returning two values; if a value has been returned and the frame
             return_value, frame = capture.read()
             
@@ -75,28 +88,25 @@ class camera():
             mid_x = floor(frame.shape[1] / 2)
             end_y = frame.shape[0]
 
-            # Displaying the middle of the frame
-            cv2.line(frame, (mid_x, 0), (mid_x, end_y), (0, 255, 0), thickness = 10)
+            # Displaying the middle of the frame and coeffecient of 30
+            cv2.line(frame, (mid_x + 30, 0), (mid_x + 30, end_y), (0, 255, 0), thickness = 10)
 
             # Detecting the face on a gray image to decrease processing time
-
-            face = self.face_classifier.detectMultiScale(frame, 1.3, 5)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            face = self.face_classifier.detectMultiScale(gray, 1.3, 5)
 
             # For the respective coords returned by the detectMultiScale
             for (x,y,w,h) in face:
-                # Finding the middle of the face detected and rounding down.
-                mid_x_face_coords = floor((x+w) / 2) 
+                mid_face_x = floor((x+w)/2)
 
                 # Drawing a line where the middle of the face is visually.
-                cv2.line(frame, (mid_x_face_coords, 0), (mid_x_face_coords, frame.shape[0]), (0,0,255), thickness=10)
+                cv2.line(frame, (mid_face_x, 0), (mid_face_x, frame.shape[0]), (0,0,255), thickness=10)
 
-                # Checking the coordinates against the middle to see where we are currently
-                if mid_x_face_coords < mid_x:
-                    turret.move_left(10)
-                
-                elif mid_x_face_coords > mid_x:
+                # Checking the coordinates against the middle to see where we are currently + 5 coeffecient
+                if x < mid_x - 5:
+                    turret.move_left(1)
+                elif x > mid_x + 5:
                     turret.move_right(10)
-
                 else:
                     turret.face_detected()
             
