@@ -106,9 +106,9 @@ class camera():
                 cv2.line(frame, (mid_face_x, 0), (mid_face_x, end_y), (0,0,255), thickness=10)
 
                 # Checking the coordinates against the middle to see where we are currently + 5 coeffecient
-                if mid_face_x < mid_x:
+                if mid_face_x < mid_x - 10:
                     turret.move_right(1)
-                elif mid_face_x > mid_x:
+                elif mid_face_x > mid_x + 10:
                     turret.move_left(1)
                 else:
                     turret.face_detected()
