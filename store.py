@@ -39,6 +39,7 @@ class turret():
     
     # Moving the stepper motor clockwise by changing coil current
     async def move_right(self, steps):
+        asyncio.sleep(0)
         for i in range(steps):
             GPIO.output(self.gpio_pins, (GPIO.HIGH, GPIO.LOW, GPIO.LOW, GPIO.HIGH))
             sleep(0.04)
@@ -48,10 +49,13 @@ class turret():
             sleep(0.04)
             GPIO.output(self.gpio_pins, (GPIO.LOW, GPIO.LOW, GPIO.HIGH, GPIO.HIGH))
             sleep(0.04)
+            await asyncio.sleep(0)
+
 
 
     # Moving left by moving anticlockwise
     async def move_left(self, steps):
+        await asyncio.sleep(0)
         for i in range(steps):
             for step in reversed(range(len(sequence))):
                 GPIO.output(self.gpio_pins[0], sequence[step][0])
@@ -62,11 +66,13 @@ class turret():
                 sleep(0.02)
                 GPIO.output(self.gpio_pins[3], sequence[step][3])
                 sleep(0.02)
+                await asyncio.sleep(0)
+    
 
     async def face_detected(self):
         self.kit.servo[0].angle = 90
         self.kit.servo[1].angle = 90
-        sleep(1)
+        await asyncio.sleep(0)
         self.kit.servo[0].angle = 0
         self.kit.servo[1].angle = 0 
 
@@ -111,11 +117,13 @@ class camera():
                 # Checking the coordinates against the middle to see where we are currently 
                 # Awaiting for the function to be completed so the camera doesn't move until motor has moved.
                 if mid_face_x < mid_x - 10:
-                    await loop.run_until_complete(turret.move_right(1))
+                    await turret.move_right(1)
                 elif mid_face_x > mid_x + 10:
-                    await loop.run_until_complete(turret.move_left(1))
+                    await turret.move_left(1)
                 else:
-                    await loop.run_until_complete(turret.face_detected())
+                    await turret.face_detected()
+                
+                    # await loop.run_until_complete(turret.face_detected())
             
             # Displaying the actual video feed.
             cv2.imshow("Camera", frame)
