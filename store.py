@@ -1,17 +1,20 @@
 import cv2
+import asyncio
 import RPi.GPIO as GPIO
 from time import sleep
 from math import floor
 from adafruit_servokit import ServoKit
 
 # Creating a list to call from to move anticlockwise
-
 sequence = [
     [1,0,0,1],
     [1,1,0,0],
     [0,1,1,0],
     [0,0,1,1]
 ]
+
+# Creating the loop for async.
+loop = asyncio.get_event_loop()
 
 # Creating a class for controlling the turret
 class turret():
@@ -35,7 +38,7 @@ class turret():
 
     
     # Moving the stepper motor clockwise by changing coil current
-    def move_right(self, steps):
+    async def move_right(self, steps):
         for i in range(steps):
             GPIO.output(self.gpio_pins, (GPIO.HIGH, GPIO.LOW, GPIO.LOW, GPIO.HIGH))
             sleep(0.04)
@@ -46,9 +49,9 @@ class turret():
             GPIO.output(self.gpio_pins, (GPIO.LOW, GPIO.LOW, GPIO.HIGH, GPIO.HIGH))
             sleep(0.04)
 
-    
+
     # Moving left by moving anticlockwise
-    def move_left(self, steps):
+    async def move_left(self, steps):
         for i in range(steps):
             for step in reversed(range(len(sequence))):
                 GPIO.output(self.gpio_pins[0], sequence[step][0])
@@ -60,7 +63,7 @@ class turret():
                 GPIO.output(self.gpio_pins[3], sequence[step][3])
                 sleep(0.02)
 
-    def face_detected(self):
+    async def face_detected(self):
         self.kit.servo[0].angle = 90
         self.kit.servo[1].angle = 90
         sleep(1)
@@ -80,7 +83,7 @@ class camera():
     
 
     # Finding faces 
-    def start_video(self, turret):
+    async def start_video(self, turret):
         capture = cv2.VideoCapture(self.wanted_camera)
 
         while True:
@@ -91,8 +94,8 @@ class camera():
             mid_x = floor(frame.shape[1] / 2)
             end_y = frame.shape[0]
 
-            # Displaying the middle of the frame and coeffecient of 30
-            cv2.line(frame, (mid_x + 30, 0), (mid_x + 30, end_y), (0, 255, 0), thickness = 10)
+            # Displaying the middle of the frame.
+            cv2.line(frame, (mid_x, 0), (mid_x, end_y), (0, 255, 0), thickness = 10)
 
             # Detecting the face on a gray image to decrease processing time
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -105,13 +108,14 @@ class camera():
                 # Drawing a line where the middle of the face is visually.
                 cv2.line(frame, (mid_face_x, 0), (mid_face_x, end_y), (0,0,255), thickness=10)
 
-                # Checking the coordinates against the middle to see where we are currently + 5 coeffecient
+                # Checking the coordinates against the middle to see where we are currently 
+                # Awaiting for the function to be completed so the camera doesn't move until motor has moved.
                 if mid_face_x < mid_x - 10:
-                    turret.move_right(1)
+                    await loop.run_until_complete(turret.move_right(1))
                 elif mid_face_x > mid_x + 10:
-                    turret.move_left(1)
+                    await loop.run_until_complete(turret.move_left(1))
                 else:
-                    turret.face_detected()
+                    await loop.run_until_complete(turret.face_detected())
             
             # Displaying the actual video feed.
             cv2.imshow("Camera", frame)
