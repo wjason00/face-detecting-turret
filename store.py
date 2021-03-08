@@ -70,9 +70,9 @@ class turret():
     async def face_detected(self):
         self.kit.servo[0].angle = 90
         self.kit.servo[1].angle = 90
-        await asyncio.sleep(0.5)
         self.kit.servo[0].angle = 0
         self.kit.servo[1].angle = 0 
+        await asyncio.sleep(0)
 
     
     def cleanup(self):
@@ -88,6 +88,9 @@ class camera():
 
     # Finding faces 
     async def start_video(self, turret):
+        global direction_of_motor
+        direction_of_motor = None
+
         # Using the desired camera and getting the loop being run.
         # Assigning a future to handle all of the functions
         capture = cv2.VideoCapture(self.wanted_camera)
@@ -117,13 +120,24 @@ class camera():
                 cv2.line(frame, (mid_face_x, 0), (mid_face_x, end_y), (0,0,255), thickness=10)
 
                 # Checking the coordinates against the middle to see where we are currently 
-    
                 if mid_face_x < mid_x - 10:
-                    future.remove_done_callback(Any)
-                    future.add_done_callback(turret.move_right(10))
+                    if direction_of_motor != "left":
+                        future.remove_done_callback(Any)
+                        future.add_done_callback(turret.move_right(10))
+                        direction_of_motor == "left"
+
+                    elif future.done():
+                        future.add_done_callback(turret.move_right(10))
+
                 elif mid_face_x > mid_x + 10:
-                    future.remove_done_callback(Any)
-                    future.add_done_callback(loop.create_task(turret.move_left(10)))
+                    if direction_of_motor != "right":
+                        future.remove_done_callback(Any)
+                        future.add_done_callback(turret.move_left(10))
+                        direction_of_motor = "right"
+
+                    elif future.done():
+                        future.add_done_callback(turret.move_left(10))
+                    
                 else:
                     await turret.face_detected()
                 
