@@ -137,5 +137,6 @@ Package Name | Version used | Pre-installed on Raspberry Pi 4B+ |
 [adafruit_servokit](https://pypi.org/project/adafruit-circuitpython-servokit/) | 1.3.3 | NO
 [math](https://www.python.org/downloads/) | 3.7.0 | YES 
 [time](https://www.python.org/downloads/) | 3.7.0 | YES
+[asyncio](https://pypi.org/project/asyncio/) | 3.4.3 | NO
 
 > The Python version I used was 3.7.
