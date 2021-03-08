@@ -11,7 +11,6 @@ if __name__ == "__main__":
     try:
         asyncio.run(camera_1.start_video(turret_1))
 
-
     except KeyboardInterrupt:
         turret_1.cleanup()  
           

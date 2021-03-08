@@ -13,8 +13,6 @@ sequence = [
     [0,0,1,1]
 ]
 
-# Creating the loop for async.
-loop = asyncio.get_event_loop()
 
 # Creating a class for controlling the turret
 class turret():
@@ -39,7 +37,7 @@ class turret():
     
     # Moving the stepper motor clockwise by changing coil current
     async def move_right(self, steps):
-        asyncio.sleep(0)
+        await asyncio.sleep(0)
         for i in range(steps):
             GPIO.output(self.gpio_pins, (GPIO.HIGH, GPIO.LOW, GPIO.LOW, GPIO.HIGH))
             sleep(0.04)
@@ -72,7 +70,7 @@ class turret():
     async def face_detected(self):
         self.kit.servo[0].angle = 90
         self.kit.servo[1].angle = 90
-        await asyncio.sleep(0)
+        await asyncio.sleep(0.5)
         self.kit.servo[0].angle = 0
         self.kit.servo[1].angle = 0 
 
@@ -86,11 +84,15 @@ class camera():
     def __init__(self, wanted_camera):
         self.wanted_camera = wanted_camera
         self.face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    
+
 
     # Finding faces 
     async def start_video(self, turret):
+        # Using the desired camera and getting the loop being run.
+        # Assigning a future to handle all of the functions
         capture = cv2.VideoCapture(self.wanted_camera)
+        loop = asyncio.get_running_loop()
+        future = loop.create_future()
 
         while True:
             # Returning two values; if a value has been returned and the frame
@@ -115,11 +117,13 @@ class camera():
                 cv2.line(frame, (mid_face_x, 0), (mid_face_x, end_y), (0,0,255), thickness=10)
 
                 # Checking the coordinates against the middle to see where we are currently 
-                # Awaiting for the function to be completed so the camera doesn't move until motor has moved.
+    
                 if mid_face_x < mid_x - 10:
-                    await turret.move_right(1)
+                    future.remove_done_callback(Any)
+                    future.add_done_callback(turret.move_right(10))
                 elif mid_face_x > mid_x + 10:
-                    await turret.move_left(1)
+                    future.remove_done_callback(Any)
+                    future.add_done_callback(loop.create_task(turret.move_left(10)))
                 else:
                     await turret.face_detected()
                 
