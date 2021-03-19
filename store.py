@@ -154,7 +154,7 @@ class camera():
                 loop.create_task()"""
             
         else:
-            await turret.face_detected()
+            turret.face_detected()
 
 
 
