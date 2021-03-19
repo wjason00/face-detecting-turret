@@ -2,7 +2,7 @@ import cv2
 import asyncio
 import RPi.GPIO as GPIO
 from time import sleep
-from math import floor, abs
+from math import floor
 from adafruit_servokit import ServoKit
 
 
