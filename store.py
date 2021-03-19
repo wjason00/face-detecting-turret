@@ -116,9 +116,9 @@ class camera():
                     print(self.mid_face_x)
 
                     if self.mid_face_x < self.mid_x - 10:
-                        turret.move_right(floor(math.abs(self.mid_x - self.mid_face_x) * 1.8))
+                        turret.move_right(floor(abs(self.mid_x - self.mid_face_x) * 1.8))
                     elif self.mid_face_x > self.mid_x + 10:
-                        turret.move_left(floor(math.abs(self.mid_x - self.mid_face_x) * 1.8))
+                        turret.move_left(floor(abs(self.mid_x - self.mid_face_x) * 1.8))
                     else:
                         turret.face_detected()
 
