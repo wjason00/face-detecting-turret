@@ -49,7 +49,7 @@ class turret():
 
 
     # Moving left by moving clockwise
-    def move_left(self, future, steps):
+    def move_left(self, steps):
         # Allowing the future to be accessed by another future or task
         for i in range(steps):
             for step in reversed(range(len(sequence))):
@@ -90,10 +90,10 @@ class camera():
         # Using the desired camera and getting the loop being run.
         # Assigning a future to handle all of the functions
         capture = cv2.VideoCapture(self.wanted_camera)
-        loop = asyncio.get_running_loop()
-        self.future = loop.create_future()
-        self.future_2 = loop.create_future()
-        cross_check_future = loop.create_future()
+        # loop = asyncio.get_running_loop()
+        # self.future = loop.create_future()
+        # self.future_2 = loop.create_future()
+        # cross_check_future = loop.create_future()
 
         while True:
             return_value, frame = capture.read()
