@@ -34,8 +34,8 @@ class turret():
         self.kit.servo[0].angle = 0
         self.kit.servo[1].angle = 0
 
-    # Moving the stepper motor counter-clockwise by changing coil current
-    def move_right(self, steps):
+    # Moving the stepper motor clockwise by changing coil current
+    async def move_right(self, steps):
         # Allowing the start to be accessed by another future / task
         for i in range(steps):
             GPIO.output(self.gpio_pins, (GPIO.HIGH, GPIO.LOW, GPIO.LOW, GPIO.HIGH))
@@ -47,9 +47,13 @@ class turret():
             GPIO.output(self.gpio_pins, (GPIO.LOW, GPIO.LOW, GPIO.HIGH, GPIO.HIGH))
             sleep(0.04)
 
+            # Using asyncio to sleep such that the task can be run outside.
+            # Giving 1 second in total for the camera to operate. If the camera finishes
+            # before then the task will end by itself.
+            asyncio.sleep(1 / steps)
 
-    # Moving left by moving clockwise
-    def move_left(self, steps):
+    # Moving left by moving counterclockwise
+    async def move_left(self, steps):
         # Allowing the future to be accessed by another future or task
         for i in range(steps):
             for step in reversed(range(len(sequence))):
@@ -62,9 +66,14 @@ class turret():
                 GPIO.output(self.gpio_pins[3], sequence[step][3])
                 sleep(0.02)
 
+            # Using asyncio to sleep such that the task can be run outside.
+            # Giving 1 second in total for the camera to operate. If the camera finishes
+            # before then the task will end by itself.
+            asyncio.sleep(1 / steps)
+
     
     
-    def face_detected(self):
+    async def face_detected(self):
         self.kit.servo[0].angle = 90
         self.kit.servo[1].angle = 90
         sleep(1)
@@ -84,47 +93,18 @@ class camera():
 
 
     # Finding faces 
-    def start_video(self, turret):
+    async def start_video(self, turret):
         self.direction_of_motor = None
-
-        # Using the desired camera and getting the loop being run.
-        # Assigning a future to handle all of the functions
-        # loop = asyncio.get_running_loop()
-        # self.future = loop.create_future()
-        # self.future_2 = loop.create_future()
-        # cross_check_future = loop.create_future()
+        
+        # Asyncio loop to gather awaitables and run them.
+        self.loop = asyncio.get_event_loop()
 
         while True:
-            capture = cv2.VideoCapture(self.wanted_camera)
+            capture = cv2.VideoCapture(0)
             return_value, frame = capture.read()
 
             if return_value:
-                end_y = frame.shape[0]
-                self.mid_x = floor(frame.shape[1] / 2)
-
-                # Detecting the face on a gray image to decrease processing time
-                cv2.line(frame, (self.mid_x, 0), (self.mid_x, end_y), (0, 255, 0), thickness = 10)
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                face = self.face_classifier.detectMultiScale(gray, 1.3, 5)
-
-                # For the respective coords returned by the detectMultiScale
-                for (x,y,w,h) in face:
-                    self.mid_face_x = x + floor(w/2)
-
-                    # Drawing a line where the middle of the face is visually.
-                    cv2.line(frame, (self.mid_face_x, 0), (self.mid_face_x, end_y), (0,0,255), thickness=10)
-                    print(self.mid_face_x)
-
-                    if self.mid_face_x < self.mid_x - 10:
-                        turret.move_right(floor(abs(self.mid_x - self.mid_face_x) * 1.8))
-                    elif self.mid_face_x > self.mid_x + 10:
-                        turret.move_left(floor(abs(self.mid_x - self.mid_face_x) * 1.8))
-                    else:
-                        turret.face_detected()
-
-
-                cv2.imshow("Camera", frame)
-                # loop.run_until_complete(future)
+                await asyncio.gather(self.loop.create_task(video_checking(turret, frame)), self.loop.create_task(motor_checking(turret)))
 
                 # Exit Sequence by waiting for esc
                 k = cv2.waitKey(30) & 0xFF 
@@ -133,37 +113,29 @@ class camera():
 
         turret.cleanup()
 
-    def motor_checking(self, turret):
+    async def motor_checking(self, turret):
         # Checking the coordinates against the middle to see where we are currently 
         if self.mid_face_x < self.mid_x - 10:
-            turret.move_right(100)
-            # Checking what direction the motor is moving.
-            """if direction_of_motor != "right":
-                future.add_done_callback(turret.move_right(6))
-                direction_of_motor = "right"
-
-            # Checking if there are any existing callbacks for this direction.
-            elif future.done():
-                future.add_done_callback(turret.move_right(6))
-"""
+            await turret.move_right(100)
         elif self.mid_face_x > self.mid_x + 10:
-            turret.move_left(100)
-            """if direction_of_motor != "left":
-                direction_to_move = loop.create_task(turret.move_left())
-                direction_of_motor = "left"""
-
-            """elif future.done():
-                loop.create_task()"""
-            
+            await turret.move_left(100)
         else:
-            turret.face_detected()
+            await turret.face_detected()
 
+    async def video_checking(self, frame):
+        end_y = frame.shape[0]
+        self.mid_x = floor(frame.shape[1] / 2)
 
+        # Detecting the face on a gray image to decrease processing time
+        cv2.line(frame, (self.mid_x, 0), (self.mid_x, end_y), (0, 255, 0), thickness = 10)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        face = self.face_classifier.detectMultiScale(gray, 1.3, 5)
 
-# Note to self when you wake up
-# The goal was to create and add 3 functions into an asyncio.gather()
-# and this gather would include a function which required a future to 
-# be closed / done.
+        # For the respective coords returned by the detectMultiScale
+        for (x,y,w,h) in face:
+            self.mid_face_x = x + floor(w/2)
 
-# The future being closed means that the camera would active in the asyncio.sleep(0)
-# time present within the code and this ensures that all of them run at least once.
+            # Drawing a line where the middle of the face is visually.
+            cv2.line(frame, (self.mid_face_x, 0), (self.mid_face_x, end_y), (0,0,255), thickness=10)
+
+        cv2.imshow("Camera", frame)
