@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 from math import floor
 from adafruit_servokit import ServoKit
-from constants import DIR, STEP, CW, CCW, SPR, DELAY, MS_PINS, RESOLUTION
+from constants import DIR, STEP, CW, CCW, SPR, DELAY, MS_PINS, RESOLUTION, RESOLUTION_CHOICE
 
 # Creating a class for controlling the turret
 class turret():
@@ -16,10 +16,8 @@ class turret():
         GPIO.output(DIR, CW) # Setting the direction equal to the wanted direction (1, 0)
 
         # Setting up microstepping
-        GPIO.setup(MS_PINS, RESOLUTION[1/1])
-
-        # Resetting the coils to their first phase.
-        GPIO.output(self.gpio_pins, (GPIO.HIGH, GPIO.LOW, GPIO.LOW, GPIO.HIGH))
+        GPIO.setup(MS_PINS, GPIO.OUT)
+        GPIO.output(MS_PINS, RESOLUTION[RESOLUTION_CHOICE])
 
         # Setting up the servo motors with the adafruit HAT
         self.kit = ServoKit(channels = 16)
@@ -114,10 +112,11 @@ class camera():
         # Checking whether or not the kwarg mid_face_x was filled.
         if self.mid_face_x != None:
             # Checking the coordinates against the middle to see where we are currently 
+            # CURRENT FORMULA => DISTANCE BETWEEN PIXELS DETECTED * 0.055625 * RESOLUTION(1/1, 1/2...)
             if self.mid_face_x < self.mid_x - 10:
-                turret.move_right(floor(abs((self.mid_x - self.mid_face_x)) * 0.45))
+                turret.move_left(floor(abs((self.mid_x - self.mid_face_x)) * 0.055625 / (RESOLUTION_CHOICE)))
             elif self.mid_face_x > self.mid_x + 10:
-                turret.move_left(floor(abs((self.mid_x - self.mid_face_x)) * 0.45))
+                turret.move_right(floor(abs((self.mid_x - self.mid_face_x)) * 0.055625 / (RESOLUTION_CHOICE)))
             else:
                 turret.face_detected()
         else:
