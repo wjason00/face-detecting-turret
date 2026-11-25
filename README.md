@@ -29,7 +29,7 @@ The stepper that holds the camera acts as the “leader”, and the turret stepp
 
 ## 3D models
 
-> All images are scaled using HTML `<img>` tags so they render with a consistent width in GitHub/Obsidian. [web:55][web:61]
+> All images are scaled using HTML `<img>` tags so they render with a consistent width in GitHub/Obsidian.
 
 ### 28BYJ‑48 stepper motor holder
 
